@@ -10,7 +10,13 @@ module RisosuSan
     #     find_parent_resource :only => :new
     #   end
     def find_parent_resource(options = {})
-      before_filter :find_parent_resource, options
+      if options[:field] then
+        field = options[:field]
+        options.delete(:field)
+      end
+      before_filter options do
+        find_parent_resource(field)
+      end
     end
   end
   
@@ -49,8 +55,9 @@ module RisosuSan
   #   find_parent_resource
   #   @parent_resource # => #<Member id: 24>
   #   @member # => #<Member id: 24>
-  def find_parent_resource
-    if @parent_resource.nil? && nested? && @parent_resource = parent_resource_params[:class].find(parent_resource_params[:id])
+  def find_parent_resource(field=nil)
+    finder_sender = field ? "find_by_#{field}" : 'find'
+    if @parent_resource.nil? && nested? && @parent_resource = parent_resource_params[:class].send(finder_sender, parent_resource_params[:id])
       instance_variable_set("@#{parent_resource_params[:name]}", @parent_resource)
     end
     @parent_resource

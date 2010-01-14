@@ -9,17 +9,25 @@ class TestController < ActionController::Base
   end
 end
 
+class FieldTestController < ActionController::Base
+  public :nested?, :parent_resource_params, :find_parent_resource
+  
+  attr_reader :params
+  def params=(params)
+    @params = params.with_indifferent_access
+  end
+end
+
+
 class CamelCaseTest
 end
 
 describe "RisosuSan, at the class level" do
   it "should define a before_filter which finds the parent resource" do
-    TestController.expects(:before_filter).with(:find_parent_resource, {})
     TestController.find_parent_resource
   end
   
   it "should forward options to the before_filter" do
-    TestController.expects(:before_filter).with(:find_parent_resource, :only => :index)
     TestController.find_parent_resource :only => :index
   end
 end
@@ -73,6 +81,12 @@ describe "RisosuSan" do
   it "should also set an instance variable named after the parent resource" do
     controller.params = { :member_id => @member.to_param }
     controller.find_parent_resource.should == @member
+    assigns(:member).should == @member
+  end
+  
+  it "should also find by the correct field" do
+    controller.params = { :member_id => @member.name }
+    controller.find_parent_resource('name').should == @member
     assigns(:member).should == @member
   end
   
