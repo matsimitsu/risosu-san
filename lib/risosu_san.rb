@@ -7,7 +7,7 @@ module RisosuSan
     # Adds a before filter which will take care of finding the parent resource.
     #
     #   class PasswordsController < ActionController::Base
-    #     find_parent_resource :only => :new
+    #     find_parent_resource :only => :new, :field => 'slug'
     #   end
     def find_parent_resource(options = {})
       if options[:field] then
@@ -53,6 +53,13 @@ module RisosuSan
   #
   #   params # => { :member_id => 24, :id => 42 }
   #   find_parent_resource
+  #   @parent_resource # => #<Member id: 24>
+  #   @member # => #<Member id: 24>
+  # 
+  #   OR: 
+  # 
+  #   params # => { :member_id => 24, :id => 'this-is-a-unique-slug }
+  #   find_parent_resource, :field => 'slug'
   #   @parent_resource # => #<Member id: 24>
   #   @member # => #<Member id: 24>
   def find_parent_resource(field=nil)
