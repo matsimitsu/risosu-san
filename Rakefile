@@ -26,19 +26,12 @@ end
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |s|
-    s.name     = "risosu-san"
-    s.homepage = "http://github.com/Fingertips/risosu-san"
-    s.email    = "eloy.de.enige@gmail.com"
-    s.authors  = ["Eloy Duran"]
+    s.name     = "matsimitsu-risosu-san"
+    s.homepage = "http://github.com/Matsimitsu/risosu-san"
+    s.email    = "robert@matsimitsu.nl"
+    s.authors  = ["Eloy Duran", "Robert Beekman"]
     s.summary  = s.description = "RisosuSan is a Rails plugin that assists in situations where a resource controller is nested under another resource."
   end
-rescue LoadError
 end
 
-begin
-  require 'jewelry_portfolio/tasks'
-  JewelryPortfolio::Tasks.new do |p|
-    p.account = 'Fingertips'
-  end
-rescue LoadError
-end
+Jeweler::GemcutterTasks.new

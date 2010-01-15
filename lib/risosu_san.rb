@@ -14,8 +14,8 @@ module RisosuSan
         field = options[:field]
         options.delete(:field)
       end
-      before_filter options do
-        find_parent_resource(field)
+      before_filter options do |c|
+       c.send(:find_parent_resource, field)
       end
     end
   end
