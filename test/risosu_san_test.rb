@@ -90,11 +90,18 @@ describe "RisosuSan" do
     assigns(:member).should == @member
   end
   
+  it "should also fallback to id when item could not be found by the correct field" do
+    controller.params = { :member_id => @member.id }
+    controller.find_parent_resource('name').should == @member
+    assigns(:member).should == @member
+  end
+  
   it "should return nil if the resource isn't nested" do
     controller.params = {}
     controller.find_parent_resource.should.be nil
     assigns(:parent_resource).should.be nil
   end
+  
   
   private
   
@@ -102,3 +109,4 @@ describe "RisosuSan" do
     controller.instance_variable_get("@#{name}")
   end
 end
+
