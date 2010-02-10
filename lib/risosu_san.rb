@@ -9,6 +9,8 @@ module RisosuSan
     #   class PasswordsController < ActionController::Base
     #     find_parent_resource :only => :new, :field => 'slug'
     #   end
+    # 
+    #   :field setting is optional, if used and record is not found, there is a fallback to ID
     def find_parent_resource(options = {})
       if options[:field] then
         field = options[:field]
@@ -64,7 +66,7 @@ module RisosuSan
   #   @member # => #<Member id: 24>
   def find_parent_resource(field=nil)
     finder_sender = field ? "find_by_#{field}" : 'find'
-    if @parent_resource.nil? && nested? && @parent_resource = parent_resource_params[:class].send(finder_sender, parent_resource_params[:id])
+    if @parent_resource.nil? && nested? && @parent_resource = parent_resource_params[:class].send(finder_sender, parent_resource_params[:id]) || parent_resource_params[:class].send('find', parent_resource_params[:id])
       instance_variable_set("@#{parent_resource_params[:name]}", @parent_resource)
     end
     @parent_resource
