@@ -39,7 +39,7 @@ describe "RisosuSan" do
     RisosuSanTest::Initializer.setup_database
     
     @controller = TestController.new
-    @member = Member.create(:name => 'Eloy')
+    @member = Member.create(:name => 'Eloy', :active => true)
   end
   
   after do
@@ -89,7 +89,13 @@ describe "RisosuSan" do
     controller.find_parent_resource('name').should == @member
     assigns(:member).should == @member
   end
-  
+
+  it "should use a scope while finding the resource" do
+    controller.params = { :member_id => @member.to_param }
+    controller.find_parent_resource(nil, 'active').should == @member
+    assigns(:member).should == @member
+  end
+
   it "should also fallback to id when item could not be found by the correct field" do
     controller.params = { :member_id => @member.id }
     controller.find_parent_resource('name').should == @member
@@ -109,4 +115,3 @@ describe "RisosuSan" do
     controller.instance_variable_get("@#{name}")
   end
 end
-

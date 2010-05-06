@@ -10,14 +10,18 @@ module RisosuSan
     #     find_parent_resource :only => :new, :field => 'slug'
     #   end
     # 
-    #   :field setting is optional, if used and record is not found, there is a fallback to ID
+    #   :field and :scope settings are optional, if used and record is not found, there is a fallback to ID
     def find_parent_resource(options = {})
       if options[:field] then
         field = options[:field]
         options.delete(:field)
       end
+      if options[:scope] then
+        scope = options[:scope]
+        options.delete(:scope)
+      end
       before_filter options do |c|
-       c.send(:find_parent_resource, field)
+       c.send(:find_parent_resource, field, scope)
       end
     end
   end
@@ -64,9 +68,9 @@ module RisosuSan
   #   find_parent_resource, :field => 'slug'
   #   @parent_resource # => #<Member id: 24>
   #   @member # => #<Member id: 24>
-  def find_parent_resource(field=nil)
+  def find_parent_resource(field=nil, scope=nil)
     finder_sender = field ? "find_by_#{field}" : 'find'
-    if @parent_resource.nil? && nested? && @parent_resource = parent_resource_params[:class].send(finder_sender, parent_resource_params[:id]) || parent_resource_params[:class].send('find', parent_resource_params[:id])
+    if @parent_resource.nil? && nested? && @parent_resource = (scope ? parent_resource_params[:class].send(scope).send(finder_sender, parent_resource_params[:id]) : parent_resource_params[:class].send(finder_sender, parent_resource_params[:id])) || parent_resource_params[:class].send('find', parent_resource_params[:id])
       instance_variable_set("@#{parent_resource_params[:name]}", @parent_resource)
     end
     @parent_resource

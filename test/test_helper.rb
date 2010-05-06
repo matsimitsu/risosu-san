@@ -43,6 +43,7 @@ module RisosuSanTest
       ActiveRecord::Schema.define(:version => 1) do
         create_table :members do |t|
           t.column :name, :string
+          t.column :active, :boolean
         end
       end
     end
@@ -72,4 +73,7 @@ RisosuSanTest::Initializer.start
 # end
 
 class Member < ActiveRecord::Base
+
+  named_scope :active, :conditions => { :active => true }
+
 end
